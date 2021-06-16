@@ -1,261 +1,159 @@
+    //chamada de bibliotecas para o funcionamento ideal do programa
 #include <stdio.h>
 #include <locale.h>
 #include <string.h>
 #include <ctype.h>
 #include <conio.h>
 #include <stdlib.h>
+#include <windows.h>
+#include "revestimentos.h"
+#include "materiais.h"
+#include "calculo_alvenaria.h"
 
-float PESO_MATERIAL_FECHAMENTO();
-float CALC_ALVENARIA(float COMPRIMENTO, float H_ALVENARIA);
-//float REVESTIMENTOS();
+    //declaração global do escopo de funções que o projeto utiliza
+float peso_material_fechamento();    //função para retornar valor do peso do material escolhido pelo usuário
+float revestimentos();    //função para retornar valor do peso de revestimento escolhido pelo usuário
+float calc_alvenaria(float comprimento, float h_alvenaria);    //função para retornar o resultado do calculo da área total da alvenaria
 
-int main(){
-
-float PD, COMPRIMENTO, ESPESSURA, H_VIGA, H_LAJE, H_ALVENARIA, PESO_ALVENARIA, TIPO_MATERIAL, AREA_TOTAL_ALVENARIA, VOLUME_ALVENARIA, PESO_TOTAL_REVESTIMENTO, REVESTIMENTOS, PESO_TOTAL_PAREDE;
-int TIPO_VIGA;
-char DESCONTAR_VIGA, OP, OP2;
-
-setlocale(LC_ALL, "Portuguese"); //configura caracteres da língua portuguesa
-printf("                    +-----------------------------------------------------------------------------+\n");
-printf("                    |  Pontifícia Universidade Católica de Minas Gerais - campus Poços de Caldas  |\n");
-printf("                    |              Ciência da Computação - Laboratório de AED II                  |\n");
-printf("                    |                                                                             |\n");
-printf("                    |  Projeto Final: Programa que Calcula a Carga Linear de Parade para          |\n");
-printf("                    |  Auxiliar Profissionais da Construção Civil nos Calculos Estruturais        |\n");
-printf("                    |  Alunos: João Marcelo Danza & Tuanne Assenço                                |\n");
-printf("                    +-----------------------------------------------------------------------------+\n\n");
-printf("\n   Aperte qualquer tecla para iniciar o programa...\n\n");
-getchar();
-system("cls");
-
-OP = 'S';
-OP2 = 'N';
-
-while(OP == 'S')
+int main()
 {
-    while(OP2 == 'N')
+    MessageBox(NULL, "       Pontifícia Universidade Católica de Minas Gerais - Poços de Caldas\n                       Ciência da Computação - Laboratório de AED II\n\n             Programa que Calcula a Carga Linear de Parede para Auxiliar                        Profissionais da Construção Civil nos Calculos Estruturais\n\n                               João Marcelo Danza & Tuanne Assenço", "Projeto Final", MB_OK);
+
+        //declaração de variáveis locais utilizadas para o funcionamento do programa
+    float pd, comprimento, espessura, h_viga, h_laje, h_alvenaria, peso_alvenaria, area_total_alvenaria, volume_alvenaria, peso_total_revestimento, peso_total_parede, tipo_material;
+    int tipo_viga;
+    char descontar_viga, op, op2, buf[1024];
+
+    setlocale(LC_ALL, "Portuguese");    //configura caracteres da língua portuguesa
+    op = 'S';
+    op2 = 'N';
+
+    while(op == 'S')
     {
-        TIPO_MATERIAL = PESO_MATERIAL_FECHAMENTO(); //***Arquivo: Materiais_Alvenaria***
-        printf("\n\n*OBS.: UTILIZAR VÍRGULA COMO SEPARADOR DECIMAL PARA A ENTRADA DAS DIMENSOES*");
-        printf("\n\nQUAL O PE-DIREITO?: ");
-        scanf("%f", &PD);
-
-        printf("\nDESCONTAR ALTURA DA VIGA PARA O CALCULO DA ALVENARIA? (S-SIM, N-NAO): ");
-        DESCONTAR_VIGA = toupper(getche());
-        getchar();
-
-        if (DESCONTAR_VIGA == 'S')
+        while(op2 == 'N')
         {
-                printf("\n\nQUAL A ALTURA DA VIGA?: ");
-                scanf("%f", &H_VIGA);
+            tipo_material = peso_material_fechamento();    //*** Arquivo: materiais.h ***
+            printf("\n\n\n *OBS.: UTILIZAR VÍRGULA COMO SEPARADOR DECIMAL PARA A ENTRADA DAS DIMENSOES*");
+            printf("\n\n - Insira o valor do Pé-Direito (m): ");
+            scanf("%f", &pd);
 
-                printf("\nQUAL O TIPO DE VIGA?\n\n");
-                printf("1 - COM LAJE EMBUTIDA NA PARTE SUPERIOR\n");
-                printf("2 - COM LAJE EMBUTIDA NA PARTE INFERIOR\n");
-                printf("3 - COM LAJE APOIADA\n");
-                printf("4 - VIGA INVERTIDA\n");
-                printf("\nDigite sua opção: ");
-                scanf("%d", &TIPO_VIGA);
+            printf("\n - Deseja DESCONTAR a altura da viga para o cálculo da alvenaria? (S-SIM ; N-NÃO): ");
+            descontar_viga = toupper(getche());
+            getchar();
 
-                    switch (TIPO_VIGA)
-                    {
-                        case 1:
-                        printf("\nQUAL A ALTURA DA LAJE?: ");
-                        scanf("%f", &H_LAJE);
-                        getchar();
-
-                        H_ALVENARIA = PD - (H_VIGA - H_LAJE);
-                        break;
-
-                        case 2:
-                        H_ALVENARIA = PD;
-                        getchar();
-                        break;
-
-                        case 3:
-                        H_ALVENARIA = PD - H_VIGA;
-                        getchar();
-                        break;
-
-                        case 4:
-                        H_ALVENARIA = PD;
-                        getchar();
-                        break;
-
-                        default:
-                        printf("OPCAO INVALIDA");
-                        getchar();
-                    }
-        } else
-            H_ALVENARIA = PD;
-
-        OP2 = 'S';
-    }
-        printf("\n\nQUAL O COMPRIMENTO DA PAREDE?: ");
-        scanf("%f", &COMPRIMENTO);
-        getchar();
-
-        printf("\nQUAL A ESPESSURA DA PAREDE (SOMENTE ALVENARIA)?: ");
-        scanf("%f", &ESPESSURA);
-        getchar();
-
-
-        AREA_TOTAL_ALVENARIA = CALC_ALVENARIA(COMPRIMENTO, H_ALVENARIA); //***Arquivo: Alvenaria
-
-        VOLUME_ALVENARIA = AREA_TOTAL_ALVENARIA*ESPESSURA;
-        printf("\nVolume alvenaria: %.2f", VOLUME_ALVENARIA);
-
-        //PESO_ALVENARIA = VOLUME_ALVENARIA*TIPO_MATERIAL/COMPRIMENTO;
-
-        //printf("-------------------------------------------------");
-        //printf("PESO DA ALVENARIA (kN/m) = ", PESO_ALVENARIA);
-        //printf("-------------------------------------------------");
-
-        //PESO_TOTAL_REVESTIMENTO = (REVESTIMENTOS()*AREA_TOTAL_ALVENARIA)/COMPRIMENTO; ***Arquivo: Revestimentos***
-        //printf("*****PESO TOTAL DO REVESTIMENTO (kN/m)=", PESO_TOTAL_REVESTIMENTO);
-
-
-        //PESO_TOTAL_PAREDE = PESO_ALVENARIA + PESO_TOTAL_REVESTIMENTO;
-        //printf("************************************************");
-        //printf("* PESO TOTAL DA PAREDE (kN/m)=", PESO_TOTAL_PAREDE);
-        //printf("************************************************");
-
-    printf("\n\nDESEJA EFETUAR OS CALCULOS PARA OUTRA PAREDE (S-SIM, N-NAO)\n");
-    OP = toupper(getche());
-
-    if (OP == 'S')
-    {
-    printf("\n\nDESEJA MANTER OS DADOS DO MATERIAL DA PAREDE, PE-DIREITO, ALTURA DA VIGA E LAJE ANTERIORMENTE INFORMADOS? (S-SIM, N-NAO)\n\n");
-    OP2 = toupper(getche());
-    printf("\n\n");
-    }
-}
-
-return(0);
-}
-
-float PESO_MATERIAL_FECHAMENTO()
-{
-    //___   declaração de variáveis locais   ___//
-    char OP;
-    int OP_Material, i;
-
-    typedef struct {
-        int id;
-        char nome[50];
-        float peso;
-    } sMat_Alvenaria;
-
-    sMat_Alvenaria vMat_Alvenaria[3];
-
-        vMat_Alvenaria[0].id = 1;
-        strcpy(vMat_Alvenaria[0].nome, "Bloco de Concreto Vazado");
-        vMat_Alvenaria[0].peso = 14;
-
-        vMat_Alvenaria[1].id = 2;
-        strcpy(vMat_Alvenaria[1].nome, "Tijolo Furado");
-        vMat_Alvenaria[1].peso = 13;
-
-        vMat_Alvenaria[2].id = 3;
-        strcpy(vMat_Alvenaria[2].nome, "Tijolo Maciço");
-        vMat_Alvenaria[2].peso = 18;
-
-    //___   apresentação do menu de opções   ___//
-    printf("Materiais cadastrados:\n\n");
-
-    printf(" ID              Material           kN/m3");
-    printf("\n________________________________________________\n");
-    printf("\n");
-        for(i = 0;i < 3; i++)
-        {
-            printf("%d.       ",vMat_Alvenaria[i].id);
-            printf("%s         ",vMat_Alvenaria[i].nome);
-            printf("%.2f\n", vMat_Alvenaria[i].peso);
-        }
-
-        printf("\n\nVocê deseja acrescentar outro material? (S-SIM, N-NAO): ");
-        OP = toupper(getche());
-        getchar();
-        do
-        {
-            if(OP != 'S' && OP != 'N')
+            if (descontar_viga == 'S')
             {
-                printf("Opção inválida, digite novamente sua opção: ");
-                OP = toupper(getche());
-            }
-            if(OP == 'S')
-            {
-                //implementar a lista.(loading****)
+                printf("\n\n - Qual a ALTURA da Viga? (m): ");
+                scanf("%f", &h_viga);
+                getchar();
+
+                printf("\n   - Qual o TIPO de viga?\n\n");
+                printf("   1 - Com laje embutida na parte superior\n");
+                printf("   2 - Com laje embutida na parte inferior\n");
+                printf("   3 - Com laje apoiada\n");
+                printf("   4 - Viga invertida\n");
+                printf("\n   Digite o número da sua opção: ");
+                scanf("%d", &tipo_viga);
+
+                switch (tipo_viga)
+                {
+                case 1:
+                    printf("\n   - Qual a ALTURA da laje? (m): ");
+                    scanf("%f", &h_laje);
+                    getchar();
+
+                    h_alvenaria = pd - (h_viga - h_laje);
+                    break;
+
+                case 2:
+                    h_alvenaria = pd;
+                    getchar();
+                    break;
+
+                case 3:
+                    h_alvenaria = pd - h_viga;
+                    getchar();
+                    break;
+
+                case 4:
+                    h_alvenaria = pd;
+                    getchar();
+                    break;
+
+                default:
+                    printf("\n Opção inválida...");
+                    getchar();
+                }
             }
             else
-            {
-                system("cls");
-                printf("Materiais cadastrados:\n\n");
+                h_alvenaria = pd;
 
-                printf(" ID              Material           kN/m3");
-                printf("\n________________________________________________\n");
-                printf("\n");
-                    for(i = 0;i < 3; i++)
-                    {
-                        printf("%d.       ",vMat_Alvenaria[i].id);
-                        printf("%s         ",vMat_Alvenaria[i].nome);
-                        printf("%.2f\n", vMat_Alvenaria[i].peso);
-                    }
-                printf("\n\nSelecione a sua opção: ");
-                scanf("%d", &OP_Material);
-
-            }
-        }while (OP != 'S' && OP != 'N');
-
-    getchar();
-    return(vMat_Alvenaria[OP_Material-1].peso);
-}
-
-float CALC_ALVENARIA(float COMPRIMENTO, float H_ALVENARIA)
-{
-    float ABERTURA();
-
-    float AREA_PARC_ALVENARIA, AREA_TOTAL_ALVENARIA, AREA_ABERTURAS;
-
-    AREA_PARC_ALVENARIA = H_ALVENARIA*COMPRIMENTO;
-
-    AREA_ABERTURAS = ABERTURA();
-
-    AREA_TOTAL_ALVENARIA = AREA_PARC_ALVENARIA-AREA_ABERTURAS;
-
-system("cls");
-printf("-------------------------------------------------");
-printf("\nAREA TOTAL DA ALVENARIA (m2)= %.2f", AREA_TOTAL_ALVENARIA);
-
-return(AREA_TOTAL_ALVENARIA);
-}
-
-float ABERTURA()
-{
-    float B, H, AREA_ABERTURA, ABERTURA;
-    char ABERT;
-
-    printf("\nA PAREDE POSSUI ALGUMA ABERTURA? (S-SIM ; N-NAO): ");
-    ABERT = toupper(getche());
-    getchar();
-
-    AREA_ABERTURA = 0;
-
-    while(ABERT == 'S')
-    {
-        printf("\nDIGITE A MEDIDA DA BASE DA ABERTURA (m): ");
-        scanf("%f", &B);
-        getchar();
-        printf("\nDIGITE A MEDIDA DA ALTURA DA ABERTURA (m): ");
-        scanf("%f", &H);
+            op2 = 'S';
+        }
+        printf("\n\n - Qual o COMPRIMENTO da parede? (m): ");
+        scanf("%f", &comprimento);
         getchar();
 
-        AREA_ABERTURA = AREA_ABERTURA + (B*H);
-
-        printf("\nA PAREDE POSSUI MAIS ALGUMA ABERTURA? (S-SIM ; N-NAO): ");
-        ABERT = toupper(getche());
+        printf("\n - Qual a ESPESSURA da parede (somente alvenaria)? (m): ");
+        scanf("%f", &espessura);
         getchar();
+
+
+        area_total_alvenaria = calc_alvenaria(comprimento, h_alvenaria);    //*** Arquivo: calculo_alvenaria.h ***
+
+        volume_alvenaria = area_total_alvenaria*espessura;
+        peso_alvenaria = volume_alvenaria*tipo_material/comprimento;
+
+        snprintf(buf, 1024, "Área total da alvenaria (m2) = %.2f\nVolume alvenaria (m3) = %.2f\nPeso da alvenaria (kN/m) = %.2f",area_total_alvenaria, volume_alvenaria, peso_alvenaria);
+        MessageBox(NULL, buf, "Alvenaria", MB_OK);
+
+        printf("\n\n-------------------------------------------------");
+        printf("\n Área total da alvenaria (m2) = %.2f", area_total_alvenaria);
+        printf("\n-------------------------------------------------");
+
+        printf("\n-------------------------------------------------\n");
+        printf(" Volume alvenaria (m3) = %.2f", volume_alvenaria);
+        printf("\n-------------------------------------------------");
+
+        printf("\n-------------------------------------------------\n");
+        printf(" Peso da alvenaria (kN/m) = %.2f", peso_alvenaria);
+        printf("\n-------------------------------------------------");
+
+        printf("\n\n Pressione ENTER para informar os REVESTIMENTOS...");
+        getchar();
+
+        peso_total_revestimento = (revestimentos()*area_total_alvenaria)/comprimento;    //*** Arquivo: revestimentos.h ***
+
+        snprintf(buf, 1024, "Peso total do revestimento (kN/m) = %.2f", peso_total_revestimento);
+        MessageBox(NULL, buf, "Revestimento", MB_OK);
+
+        printf("\n\n-------------------------------------------------\n");
+        printf(" Peso total do revestimento (kN/m) = %.2f", peso_total_revestimento);
+        printf("\n-------------------------------------------------");
+        getchar();
+
+        system("cls");
+        peso_total_parede = peso_alvenaria + peso_total_revestimento;
+
+        snprintf(buf, 1024, "Peso total da parede (kN/m) = %.2f", peso_total_parede);
+        MessageBox(NULL, buf, "Resultado", MB_OK);
+
+        printf(" ************************************************\n");
+        printf(" *      Peso total da parede (kN/m) = %.2f      *", peso_total_parede);    //resultado final do projeto
+        printf("\n ************************************************\n");
+
+        printf("\n\n Deseja efetuar os cálculos para outra parede? (S-SIM, N-NAO): ");
+        op = toupper(getche());
+
+        if (op == 'S')
+        {
+            printf("\n\nDeseja manter os dados do material da parede, pé-direito, altura da viga e laje anteriormente informados? (S-SIM, N-NAO)\n\n");
+            op2 = toupper(getche());
+            printf("\n\n");
+        }
     }
 
-    return(AREA_ABERTURA);
+    MessageBox(NULL, "Agradecemos por utilizar nosso programa!", "Projeto Final", MB_OK);
+
+    return (0);
 }
