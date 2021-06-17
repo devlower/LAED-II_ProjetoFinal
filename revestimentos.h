@@ -3,7 +3,7 @@ typedef struct sMat_Revest
     int id;    //codigo do revestimento
     float peso;    //peso do revestimento
     char nome[50];    //nome do revestimento
-    struct sMat_Revest *proximo;    //proximo elemento da lista encadeada de materiais
+    struct sMat_Revest *proximo;    //proximo elemento da lista encadeada de revestimentos
 }  TsMat_Revest;
 
 void inserirMatRevest(TsMat_Revest **inicio, int cont);
@@ -14,12 +14,12 @@ int cont;
 float revestimentos()
 {
     TsMat_Revest *inicio = NULL;        //Ponteiro para a inicio da lista
-    TsMat_Revest *noatual;               //Ponteiro a ser usado para percorrer a lista no momento de desalocar seus elementos
-    char op;
+    TsMat_Revest *noatual;               //Ponteiro a ser usado para percorrer a lista
+    char op;                            //guarda a opção do usuário para o switch case:
 
     for(cont=1; cont<5; cont++)
     {
-        inserirMatRevest(&inicio,cont);
+        inserirMatRevest(&inicio,cont);     //Função que insere revestimentos em uma lista default para exibição ao usuário
     }
     cont--;
 
@@ -36,12 +36,12 @@ float revestimentos()
         {
         case 'I':
             cont++;
-            inserirMatRevest(&inicio, cont);
+            inserirMatRevest(&inicio, cont);    //Função que permite que o usuário insira mais revestimentos na lista default
             break;
 
         case 'S':
-            return(selecaoMatRevest(inicio));
-            break;  //retorna o peso do revestimento selecionado para a funÃ§Ã£o principal (main)
+            return(selecaoMatRevest(inicio));   //retorna o peso do revestimento selecionado para a função principal (main)
+            break;  
 
         default:
             printf("\n\nOpção inválida...\n\n");
@@ -52,7 +52,6 @@ float revestimentos()
     while (op != 'S');
 
     //desaloca a memoria alocada para os elementos da lista
-
     noatual = inicio;
     while (noatual != NULL)
     {
@@ -62,8 +61,7 @@ float revestimentos()
     }
 }
 
-    //lista todos os elementos presentes na lista encadeada
-
+//lista todos os elementos presentes na lista encadeada
 void listarMatRevest (TsMat_Revest *noatual)
 {
     printf("\n\n ID                 Revestimento                 Peso (kN)\n");
@@ -75,8 +73,7 @@ void listarMatRevest (TsMat_Revest *noatual)
     }
 }
 
-    //funcao para inserir um novo no, ao final da lista
-
+//função para inserir um novo no, ao final da lista
 void inserirMatRevest (TsMat_Revest **inicio, int CONT)
 {
     TsMat_Revest *noatual, *novono;
@@ -84,22 +81,21 @@ void inserirMatRevest (TsMat_Revest **inicio, int CONT)
     float peso;
     char nome[50];
 
-    if (*inicio == NULL && CONT==1)    //se ainda nao existe nenhum revestimento na lista
+    if (*inicio == NULL && CONT==1)     //se ainda não existe nenhum revestimento na lista default
     {
         cod=1;
         strcpy(nome, "Chapisco");
         peso=19;
 
-            //cria o no inicio
+        //cria o no inicio e insere os dados do primeiro revestimento
         *inicio = (TsMat_Revest *) malloc(sizeof(TsMat_Revest));
         (*inicio)->id = cod;
         strcpy((*inicio)->nome, nome);
         (*inicio)->peso = peso;
         (*inicio)->proximo = NULL;
-
     }
 
-    if(CONT>1 && CONT<5)
+    if(CONT>1 && CONT<5)    //cria mais 3 nós na lista e insere os dados dos revestimentos para exibiçãoo ao usuário
     {
         if(CONT==2)
         {
@@ -126,7 +122,7 @@ void inserirMatRevest (TsMat_Revest **inicio, int CONT)
         while(noatual->proximo != NULL)
             noatual = noatual->proximo;    //ao final do while, noatual aponta para o ultimo no
 
-        novono = (TsMat_Revest *) malloc(sizeof(TsMat_Revest));    //aloca memoria para o novo no
+        novono = (TsMat_Revest *) malloc(sizeof(TsMat_Revest));    //aloca memória para o novo nó e depois ocorre a inserção dos dados do revestimento
         novono->id = cod;
         strcpy(novono->nome, nome);
         novono->peso = peso;
@@ -134,11 +130,10 @@ void inserirMatRevest (TsMat_Revest **inicio, int CONT)
         noatual->proximo = novono;    //faz o ultimo no apontar para o novo no
     }
 
-        //se ja existem elementos na lista, deve percorre-la ate' o seu final e inserir o novo elemento
-
+    //se ja existem elementos na lista, deve percorre-la até o seu final e inserir o novo elemento
     if(CONT>4)
     {
-            //atribui um codigo sequencial ao revestimento cadastrado
+        //atribui um codigo sequencial ao revestimento que será cadastrado pelo usuário e solicita a inserção dos dados
         cod=CONT;
         getchar();
         printf("\n Nome do revestimento: ");
@@ -150,16 +145,16 @@ void inserirMatRevest (TsMat_Revest **inicio, int CONT)
         noatual = *inicio;
         while(noatual->proximo != NULL)
             noatual = noatual->proximo;    //ao final do while, noatual aponta para o ultimo no
-        novono = (TsMat_Revest *) malloc(sizeof(TsMat_Revest));    //aloca memoria para o novo no
+        novono = (TsMat_Revest *) malloc(sizeof(TsMat_Revest));    //aloca memoria para o novo no e depois ocorre a inserção dos dados do revestimento
         novono->id = cod;
         strcpy(novono->nome, nome);
         novono->peso = peso;
         novono->proximo = NULL;
-        noatual->proximo = novono;    //faz o ultimo no apontar para o novo no
+        noatual->proximo = novono;    //faz o ultimo no apontar para o novo nó, possibilitando a inserção de novos revestimentos pelo usuário
     }
 }
 
-float selecaoMatRevest (TsMat_Revest *noatual)
+float selecaoMatRevest (TsMat_Revest *noatual)  //Função que permite a seleção dos revestimentos que serão utilizados nos cálculos
 {
     float peso_parc_revest = 0;
     float esp_revest = 0;
@@ -169,13 +164,13 @@ float selecaoMatRevest (TsMat_Revest *noatual)
 
     primeiroNo = noatual;
 
-    while(continuar == 'S')
+    while(continuar == 'S')     //Permite ao usuário a utilização de múltiplos revestimentos à parede
     {
         noatual = primeiroNo;
         printf("\n\n - Selecione o revestimento pelo númedo do seu ID: ");
         scanf("%d", &revestID);
 
-        while(noatual != NULL && noatual->id != revestID)    //enquanto nao chega no fim da lista
+        while(noatual != NULL && noatual->id != revestID)    //enquanto nao chega no fim da lista e não encontra o revestimento selecionado pelo usuário
         {
             noatual = noatual->proximo;
         }
@@ -207,5 +202,5 @@ float selecaoMatRevest (TsMat_Revest *noatual)
         getchar();
         noatual = noatual->proximo;
     }
-    return (peso_parc_revest);
+    return (peso_parc_revest);      //retorna o peso parcial dos revestimentos escolhidos para a função principal (main)
 }
