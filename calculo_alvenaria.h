@@ -10,10 +10,10 @@ float calc_alvenaria(float comprimento, float h_alvenaria)
 
     area_total_alvenaria = area_parc_alvenaria-area_aberturas;
 
-    return(area_total_alvenaria);
+    return(area_total_alvenaria);   //retorna a área total da alvenaria, com o desconto da área de alguma abertura para a função principal (main)
 }
 
-float abertura()
+float abertura()    //Função que desconta a ?rea de uma abertura presente na parede
 {
     float b, h, area_abertura;
     char op;

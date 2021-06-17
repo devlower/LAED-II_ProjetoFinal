@@ -32,12 +32,12 @@ int main()
     {
         while(op2 == 'N')
         {
-            tipo_material = peso_material_fechamento();    //*** Arquivo: materiais.h ***
+            tipo_material = peso_material_fechamento();    //*** Arquivo: materiais.h *** Código para inserção e seleção de materiais para a parede. Retorna o peso do material selecionado
             printf("\n\n\n *OBS.: UTILIZAR VÍRGULA COMO SEPARADOR DECIMAL PARA A ENTRADA DAS DIMENSOES*");
             printf("\n\n - Insira o valor do Pé-Direito (m): ");
             scanf("%f", &pd);
 
-            printf("\n - Deseja DESCONTAR a altura da viga para o cálculo da alvenaria? (S-SIM ; N-NÃO): ");
+            printf("\n - Deseja DESCONTAR a altura da viga para o cálculo da alvenaria? (S-SIM ; N-NÃO): ");    //Possibilidade de descontar a altura da viga presente no topo da parede
             descontar_viga = toupper(getche());
             getchar();
 
@@ -99,11 +99,12 @@ int main()
         getchar();
 
 
-        area_total_alvenaria = calc_alvenaria(comprimento, h_alvenaria);    //*** Arquivo: calculo_alvenaria.h ***
+        area_total_alvenaria = calc_alvenaria(comprimento, h_alvenaria);    //*** Arquivo: calculo_alvenaria.h *** Calcula a área total da alvenaria, caso haja alguma abertura na parede
 
         volume_alvenaria = area_total_alvenaria*espessura;
         peso_alvenaria = volume_alvenaria*tipo_material/comprimento;
 
+        //Exibe os resultados obtidos em uma MessageBox
         snprintf(buf, 1024, "Área total da alvenaria (m2) = %.2f\nVolume alvenaria (m3) = %.2f\nPeso da alvenaria (kN/m) = %.2f",area_total_alvenaria, volume_alvenaria, peso_alvenaria);
         MessageBox(NULL, buf, "Alvenaria", MB_OK);
 
@@ -122,8 +123,9 @@ int main()
         printf("\n\n Pressione ENTER para informar os REVESTIMENTOS...");
         getchar();
 
-        peso_total_revestimento = (revestimentos()*area_total_alvenaria)/comprimento;    //*** Arquivo: revestimentos.h ***
+        peso_total_revestimento = (revestimentos()*area_total_alvenaria)/comprimento;    //*** Arquivo: revestimentos.h *** Código para inserção e seleção de revestimentos para a parede. Retorna o peso dos revestimentos selecionados
 
+        //Exibe os resultados obtidos em uma MessageBox
         snprintf(buf, 1024, "Peso total do revestimento (kN/m) = %.2f", peso_total_revestimento);
         MessageBox(NULL, buf, "Revestimento", MB_OK);
 
@@ -133,13 +135,14 @@ int main()
         getchar();
 
         system("cls");
-        peso_total_parede = peso_alvenaria + peso_total_revestimento;
+        peso_total_parede = peso_alvenaria + peso_total_revestimento;   //variável que recebe o peso total da parede (material + revestimentos)
 
+        //Exibe os resultados obtidos em uma MessageBox
         snprintf(buf, 1024, "Peso total da parede (kN/m) = %.2f", peso_total_parede);
         MessageBox(NULL, buf, "Resultado", MB_OK);
 
         printf(" ************************************************\n");
-        printf(" *      Peso total da parede (kN/m) = %.2f      *", peso_total_parede);    //resultado final do projeto
+        printf(" *      Peso total da parede (kN/m) = %.2f      *", peso_total_parede);    //Valor do peso total da parede por metro linear (Resultado e objetivo do Programa)
         printf("\n ************************************************\n");
 
         printf("\n\n Deseja efetuar os cálculos para outra parede? (S-SIM, N-NAO): ");
@@ -153,6 +156,7 @@ int main()
         }
     }
 
+    //Exibe uma mensagem ao término da execução em uma MessageBox
     MessageBox(NULL, "Agradecemos por utilizar nosso programa!", "Projeto Final", MB_OK);
 
     return (0);
