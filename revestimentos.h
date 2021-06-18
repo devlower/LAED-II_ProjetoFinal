@@ -65,7 +65,7 @@ float revestimentos()
 void listarMatRevest (TsMat_Revest *noatual)
 {
     printf("\n\n ID                 Revestimento                 Peso (kN)\n");
-    printf("________________________________________________________________\n");
+    printf("________________________________________________________________");
     while(noatual != NULL)    //enquanto nao chega no fim da lista
     {
         printf("\n %d.                  %s                     %.2f kN", noatual->id, noatual->nome, noatual->peso);
@@ -160,13 +160,16 @@ float selecaoMatRevest (TsMat_Revest *noatual)  //Função que permite a seleção d
     float esp_revest = 0;
     char continuar = 'S', lados;
     int revestID, n_lados;
-    TsMat_Revest *primeiroNo;
+    TsMat_Revest *primeiroNo;       //ponteiro para o primeiro nó da lista de materiais
 
-    primeiroNo = noatual;
+    primeiroNo = noatual;           //guarda o endereço do primeiro no atual, que aqui é o primeiro da lista, na variavel primeiroNo, que será uilizado na recursividade da função
 
     while(continuar == 'S')     //Permite ao usuário a utilização de múltiplos revestimentos à parede
     {
         noatual = primeiroNo;
+
+        listarMatRevest(primeiroNo); //chama novamente a função que lista os revestimentos para nova escolha, caso o usuário digite um ID que não consta na lista
+
         printf("\n\n - Selecione o revestimento pelo númedo do seu ID: ");
         scanf("%d", &revestID);
 
@@ -175,8 +178,15 @@ float selecaoMatRevest (TsMat_Revest *noatual)  //Função que permite a seleção d
             noatual = noatual->proximo;
         }
 
+        if(noatual == NULL)     //Caso o ID informado pelo usuário não seja encontrado, exibe a mensagem 
+        {
+        printf("\nMaterial não existente ou não cadastrado.");  
+        noatual = primeiroNo;                                      //Redefine o nó atual (que estava no fim da lista) novamente como o primeiro
+        selecaoMatRevest (primeiroNo);       //chama a função seleção recursivamente até o usuário informar um ID de revestimento existente na lista
+        }
+
         system("cls");
-        printf(" Material selecionado: \n\n ID: %d.      Material: %s      Peso: %.2f kN", noatual->id, noatual->nome, noatual->peso);
+        printf("Material selecionado: \n\n ID: %d.      Material: %s      Peso: %.2f kN", noatual->id, noatual->nome, noatual->peso);
 
         if (revestID == 4)
             esp_revest = 1;
@@ -202,5 +212,6 @@ float selecaoMatRevest (TsMat_Revest *noatual)  //Função que permite a seleção d
         getchar();
         noatual = noatual->proximo;
     }
+
     return (peso_parc_revest);      //retorna o peso parcial dos revestimentos escolhidos para a função principal (main)
 }

@@ -15,11 +15,11 @@ float peso_material_fechamento()
 {
     TsMat_Alvenaria *inicio = NULL;    //ponteiro para o inicio da lista
     TsMat_Alvenaria *noatual;    //ponteiro a ser usado para percorrer a lista
-    char op;    //guarda a opção do usu?rio para o switch case:
+    char op;    //guarda a opção do usuário para o switch case:
 
     for(cont=1; cont<4; cont++)
     {
-        inserirMatParede(&inicio,cont); //Fun??o que insere materiais em uma lista default para exibi??o ao usu?rio
+        inserirMatParede(&inicio,cont); //Função que insere materiais em uma lista default para exibição ao usuário
     }
     cont--;
 
@@ -36,11 +36,11 @@ float peso_material_fechamento()
         {
         case 'I':
             cont++;
-            inserirMatParede(&inicio, cont);    //Fun??o que permite que o usu?rio insira mais materiais na lista default
+            inserirMatParede(&inicio, cont);    //Função que permite que o usuário insira mais materiais na lista default
             break;
 
         case 'S':
-            return(selecaoMatParede(inicio));   //retorna o peso do material selecionado para a fun??o principal (main)
+            return(selecaoMatParede(inicio));   //retorna o peso do material selecionado para a função principal (main)
             break;  
 
         default:
@@ -65,7 +65,7 @@ float peso_material_fechamento()
 void listarMatParede (TsMat_Alvenaria *noatual)
 {
     printf("\n\n ID                 Material                 Peso (kN)\n");
-    printf("________________________________________________________________\n");
+    printf("________________________________________________________________");
     while(noatual != NULL)    //enquanto nao chega no fim da lista
     {
         printf("\n %d.            %s               %.2f kN", noatual->id, noatual->nome, noatual->peso);
@@ -81,7 +81,7 @@ void inserirMatParede (TsMat_Alvenaria **inicio, int CONT)
     float peso;
     char nome[50];
 
-    if (*inicio == NULL && CONT==1)    //se ainda n?o existe nenhum material na lista default
+    if (*inicio == NULL && CONT==1)    //se ainda não existe nenhum material na lista default
     {
         cod=1;
         strcpy(nome, "Bloco de Concreto Vazado");
@@ -108,7 +108,7 @@ void inserirMatParede (TsMat_Alvenaria **inicio, int CONT)
         if(CONT==3)
         {
             cod=3;
-            strcpy(nome, "Tijolo Maci?o");
+            strcpy(nome, "Tijolo Maciço");
             peso=18;
         }
 
@@ -124,10 +124,10 @@ void inserirMatParede (TsMat_Alvenaria **inicio, int CONT)
         noatual->proximo = novono;    //faz o ultimo no apontar para o novo no
     }
 
-    //se ja existem elementos na lista, deve percorre-la at? o seu final e inserir o novo elemento
+    //se ja existem elementos na lista, deve percorre-la até o seu final e inserir o novo elemento
     if(CONT>3)
     {
-        //atribui um codigo sequencial ao material que ser? cadastrado pelo usu?rio e solicita a inser??o dos dados
+        //atribui um codigo sequencial ao material que será cadastrado pelo usuário e solicita a inserção dos dados
         cod=CONT;
         getchar();
         printf("\n Nome do material: ");
@@ -139,7 +139,7 @@ void inserirMatParede (TsMat_Alvenaria **inicio, int CONT)
         noatual = *inicio;
         while(noatual->proximo != NULL)
             noatual = noatual->proximo;    //ao final do while, noatual aponta para o ultimo no
-        novono = (TsMat_Alvenaria *) malloc(sizeof(TsMat_Alvenaria));    //aloca mem?ria para o novo n? e depois ocorre a inser??o dos dados do material
+        novono = (TsMat_Alvenaria *) malloc(sizeof(TsMat_Alvenaria));    //aloca memória para o novo n? e depois ocorre a inser??o dos dados do material
         novono->id = cod;
         strcpy(novono->nome, nome);
         novono->peso = peso;
@@ -148,21 +148,33 @@ void inserirMatParede (TsMat_Alvenaria **inicio, int CONT)
     }
 }
 
-float selecaoMatParede (TsMat_Alvenaria *noatual)   //Fun??o que permite a sele??o do material que ser? utilizado nos c?lculos
+float selecaoMatParede (TsMat_Alvenaria *noatual)   //Função que permite a seleção do material que será utilizado nos cálculos
 {
     int matID;
+    TsMat_Alvenaria *primeiroNo;    //ponteiro para o primeiro nó da lista de materiais
+    primeiroNo = noatual;           //guarda o endereço do primeiro no atual, que aqui é o primeiro da lista, na variavel primeiroNo, que será uilizado na recursividade da função
 
-    printf("\n\n - Selecione o material pelo n?mero do seu ID: ");
+    printf("\n\n - Selecione o material pelo número do seu ID: ");
     scanf("%d", &matID);
 
     while(noatual != NULL)    //enquanto nao chega no fim da lista
     {
-        if(noatual->id == matID)    //condi??o para que o n? que possui o ID do material selecionado pelo usu?rio seja encontrado
+        if(noatual->id == matID)    //condição para que o nó que possui o ID do material selecionado pelo usuário seja encontrado
         {
             system("cls");
-            printf(" Material selecionado: \n\n ID: %d.      Material: %s      Peso: %.2f kN", noatual->id, noatual->nome, noatual->peso);
-            return (noatual->peso); //retorna o peso do material escolhido para a fun??o principal (main)
+            printf("Material selecionado: \n\n ID: %d.      Material: %s      Peso: %.2f kN", noatual->id, noatual->nome, noatual->peso);
+            return (noatual->peso); //retorna o peso do material escolhido para a função principal (main)
         }
-        noatual = noatual->proximo;    //faz noatual apontar para o proximo n?, caso o n? que possui o ID do material selecionado pelo usu?rio ainda n?o tenha sido encontrado
+        noatual = noatual->proximo;    //faz noatual apontar para o proximo nó, caso o nó que possui o ID do material selecionado pelo usuário ainda não tenha sido encontrado
+    }  
+
+    if(noatual == NULL)     //Caso o ID informado pelo usuário não seja encontrado, exibe a mensagem 
+    {
+        printf("\nMaterial não existente ou não cadastrado.");  
+        noatual = primeiroNo;                                      //Redefine o nó atual (que estava no fim da lista) novamente como o primeiro
+        selecaoMatParede(primeiroNo);       //chama a função seleção recursivamente até o usuário informar um ID de material existente na lista
     }
+      
 }
+
+
